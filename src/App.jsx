@@ -1,3 +1,4 @@
+import Upcoming from './components/Upcoming.jsx'
 import Standings from './components/Standings.jsx'
 
 export default function App() {
@@ -8,6 +9,7 @@ export default function App() {
         <p className="muted">Group standings — names show who drew each team.</p>
       </header>
       <main>
+        <Upcoming />
         <Standings />
       </main>
     </div>

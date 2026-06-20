@@ -86,6 +86,38 @@ h2 {
 
 .small { font-size: 0.8em; }
 
+.upcoming { margin-bottom: 2rem; }
+
+.fixtures {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.fixtures li {
+  display: grid;
+  grid-template-columns: 140px 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.6rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+.fixtures .when { font-size: 0.8rem; }
+.fixtures .side strong { color: var(--accent); }
+.fixtures .side:last-child { text-align: right; }
+.fixtures .vs { color: var(--muted); font-size: 0.8rem; }
+
+@media (max-width: 560px) {
+  .fixtures li { grid-template-columns: 1fr auto 1fr; }
+  .fixtures .when { grid-column: 1 / -1; }
+}
+
 .owned-row td { background: rgba(22, 163, 74, 0.08); }
 .owned-row strong { color: var(--accent); }
 
