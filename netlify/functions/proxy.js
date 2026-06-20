@@ -8,9 +8,12 @@
 
 export default async (req) => {
   const url = new URL(req.url)
-  // Strip the function mount path to recover the real API path, e.g.
-  // /.netlify/functions/proxy/v4/competitions/WC/matches -> /v4/competitions/WC/matches
-  const path = url.pathname.replace('/.netlify/functions/proxy', '')
+  // Recover the real API path. Depending on how Netlify presents the request,
+  // the pathname may keep the original "/api/..." prefix or the internal
+  // function mount path — strip either so we end up with "/v4/...".
+  const path = url.pathname
+    .replace('/.netlify/functions/proxy', '')
+    .replace(/^\/api/, '')
   const target = `https://api.football-data.org${path}${url.search}`
 
   const token = process.env.FOOTBALL_DATA_TOKEN
