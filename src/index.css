@@ -1,0 +1,135 @@
+:root {
+  --bg: #0f1116;
+  --card: #1a1d26;
+  --line: #2a2e3a;
+  --text: #e6e8ee;
+  --muted: #8b91a3;
+  --accent: #16a34a;
+  --gold: #f5c518;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem;
+}
+
+nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 1.5rem;
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: var(--muted);
+  padding: 0.6rem 1rem;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+}
+
+nav button:hover { color: var(--text); }
+
+nav button.active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9rem;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+tbody tr:last-child td { border-bottom: none; }
+
+.points { font-weight: 700; }
+
+h2 {
+  font-size: 1.1rem;
+  margin: 0 0 0.25rem;
+}
+
+.small { font-size: 0.8em; }
+
+.owned-row td { background: rgba(22, 163, 74, 0.08); }
+.owned-row strong { color: var(--accent); }
+
+.hero {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  background: linear-gradient(135deg, rgba(245, 197, 24, 0.15), rgba(22, 163, 74, 0.1));
+  border: 1px solid rgba(245, 197, 24, 0.3);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.hero-label { color: var(--muted); font-size: 0.85rem; }
+.hero-name { font-size: 1.4rem; font-weight: 700; }
+.hero-points { margin-left: auto; font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+.leader td { background: rgba(245, 197, 24, 0.08); }
+.leader .points { color: var(--gold); }
+
+.muted { color: var(--muted); }
+
+.error {
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.4);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+code {
+  background: var(--line);
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.85em;
+}
+
+.groups {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.group h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+}

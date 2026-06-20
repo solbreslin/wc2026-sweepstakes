@@ -1,0 +1,68 @@
+import { useEffect, useState } from 'react'
+import { getStandings } from '../api.js'
+import { TEAM_OWNER } from '../scoring.js'
+
+export default function Standings() {
+  const [groups, setGroups] = useState(null)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    getStandings()
+      .then((data) => setGroups(data.standings || []))
+      .catch((e) => setError(e.message))
+  }, [])
+
+  if (error) return <div className="error">Couldn't load standings: {error}</div>
+  if (!groups) return <p className="muted">Loading standings…</p>
+  if (groups.length === 0) return <p className="muted">No standings published yet.</p>
+
+  return (
+    <section className="groups">
+      {groups.map((g) => (
+        <div key={g.group || g.stage} className="group">
+          <h3>{(g.group || g.stage || '').replace('_', ' ')}</h3>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Team</th>
+                <th>P</th>
+                <th>W</th>
+                <th>D</th>
+                <th>L</th>
+                <th>GD</th>
+                <th>Pts</th>
+              </tr>
+            </thead>
+            <tbody>
+              {g.table.map((row) => {
+                const owner = TEAM_OWNER[row.team.name]
+                return (
+                <tr key={row.team.id} className={owner ? 'owned-row' : ''}>
+                  <td>{row.position}</td>
+                  <td>
+                    {owner ? (
+                      <>
+                        <strong>{owner}</strong>{' '}
+                        <span className="muted small">{row.team.name}</span>
+                      </>
+                    ) : (
+                      <span className="muted">{row.team.name}</span>
+                    )}
+                  </td>
+                  <td>{row.playedGames}</td>
+                  <td>{row.won}</td>
+                  <td>{row.draw}</td>
+                  <td>{row.lost}</td>
+                  <td>{row.goalDifference}</td>
+                  <td className="points">{row.points}</td>
+                </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      ))}
+    </section>
+  )
+}
