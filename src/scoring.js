@@ -8,16 +8,21 @@ export const TEAM_OWNER = Object.fromEntries(
 // All teams that belong to someone in the pool.
 const POOL_TEAMS = new Set(Object.keys(TEAM_OWNER))
 
+const LIVE_MATCH_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE'])
+
 // Upcoming matches involving at least one pool team, soonest first.
 export function upcomingPoolMatches(matches = [], limit = 8) {
   const now = Date.now()
   return matches
-    .filter(
-      (m) =>
-        new Date(m.utcDate).getTime() >= now &&
+    .filter((m) => {
+      const kickoff = new Date(m.utcDate).getTime()
+      const isLive = LIVE_MATCH_STATUSES.has(m.status)
+      return (
+        (kickoff >= now || isLive) &&
         m.status !== 'FINISHED' &&
         (POOL_TEAMS.has(m.homeTeam.name) || POOL_TEAMS.has(m.awayTeam.name))
-    )
+      )
+    })
     .sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate))
     .slice(0, limit)
 }
