@@ -9,19 +9,59 @@ export const TEAM_OWNER = Object.fromEntries(
 const POOL_TEAMS = new Set(Object.keys(TEAM_OWNER))
 
 const LIVE_MATCH_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE'])
+const GROUP_QUALIFYING_PLACES = 2
 
-export function hasClinchedGroupQualification(row, table = []) {
-  const groupGames = Math.max(0, table.length - 1)
-  const rowPoints = row.points ?? 0
+const teamKey = (team = {}) => team.id ?? team.name
 
-  const teamsThatCanCatchOrPass = table.filter((other) => {
-    if (other.team.id === row.team.id) return false
-    const remainingGames = Math.max(0, groupGames - (other.playedGames ?? 0))
-    const maxPoints = (other.points ?? 0) + remainingGames * 3
-    return maxPoints >= rowPoints
+const sameTeam = (a = {}, b = {}) =>
+  (a.id != null && b.id != null && a.id === b.id) || (a.name && b.name && a.name === b.name)
+
+export function hasClinchedGroupQualification(row, table = [], matches = []) {
+  if (
+    row.position <= GROUP_QUALIFYING_PLACES &&
+    table.every((teamRow) => teamRow.playedGames === table.length - 1)
+  ) {
+    return true
+  }
+
+  const rowKey = teamKey(row.team)
+  const findGroupTeamKey = (team) => {
+    const groupRow = table.find((teamRow) => sameTeam(team, teamRow.team))
+    return groupRow ? teamKey(groupRow.team) : null
+  }
+  const remainingGroupMatches = matches.filter((match) => {
+    if (match.status === 'FINISHED') return false
+    return findGroupTeamKey(match.homeTeam) && findGroupTeamKey(match.awayTeam)
   })
 
-  return teamsThatCanCatchOrPass.length <= 1
+  const canStillMissOut = (matchIndex, pointsByTeam) => {
+    if (matchIndex === remainingGroupMatches.length) {
+      const rowPoints = pointsByTeam.get(rowKey) ?? 0
+      const teamsLevelOrAbove = [...pointsByTeam.entries()].filter(
+        ([key, points]) => key !== rowKey && points >= rowPoints
+      )
+      return teamsLevelOrAbove.length >= GROUP_QUALIFYING_PLACES
+    }
+
+    const match = remainingGroupMatches[matchIndex]
+    const homeKey = findGroupTeamKey(match.homeTeam)
+    const awayKey = findGroupTeamKey(match.awayTeam)
+    const outcomes = [
+      [homeKey, 3, awayKey, 0],
+      [homeKey, 1, awayKey, 1],
+      [homeKey, 0, awayKey, 3],
+    ]
+
+    return outcomes.some(([firstKey, firstPoints, secondKey, secondPoints]) => {
+      const nextPoints = new Map(pointsByTeam)
+      nextPoints.set(firstKey, (nextPoints.get(firstKey) ?? 0) + firstPoints)
+      nextPoints.set(secondKey, (nextPoints.get(secondKey) ?? 0) + secondPoints)
+      return canStillMissOut(matchIndex + 1, nextPoints)
+    })
+  }
+
+  const startingPoints = new Map(table.map((teamRow) => [teamKey(teamRow.team), teamRow.points ?? 0]))
+  return !canStillMissOut(0, startingPoints)
 }
 
 // Upcoming matches involving at least one pool team, soonest first.

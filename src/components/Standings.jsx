@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { getStandings } from '../api.js'
+import { getMatches, getStandings } from '../api.js'
 import { hasClinchedGroupQualification, TEAM_OWNER } from '../scoring.js'
 
 function QualifiedStar({ show }) {
@@ -13,16 +13,20 @@ function QualifiedStar({ show }) {
 
 export default function Standings() {
   const [groups, setGroups] = useState(null)
+  const [matches, setMatches] = useState(null)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    getStandings()
-      .then((data) => setGroups(data.standings || []))
+    Promise.all([getStandings(), getMatches()])
+      .then(([standingsData, matchesData]) => {
+        setGroups(standingsData.standings || [])
+        setMatches(matchesData.matches || [])
+      })
       .catch((e) => setError(e.message))
   }, [])
 
   if (error) return <div className="error">Couldn't load standings: {error}</div>
-  if (!groups) return <p className="muted">Loading standings…</p>
+  if (!groups || !matches) return <p className="muted">Loading standings…</p>
   if (groups.length === 0) return <p className="muted">No standings published yet.</p>
 
   return (
@@ -46,7 +50,7 @@ export default function Standings() {
             <tbody>
               {g.table.map((row) => {
                 const owner = TEAM_OWNER[row.team.name]
-                const isQualified = hasClinchedGroupQualification(row, g.table)
+                const isQualified = hasClinchedGroupQualification(row, g.table, matches)
                 return (
                 <tr key={row.team.id} className={owner ? 'owned-row' : ''}>
                   <td>{row.position}</td>
