@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getStandings } from '../api.js'
-import { TEAM_OWNER } from '../scoring.js'
-import { QUALIFIED_TEAMS } from '../sweepstake.js'
-
-const QUALIFIED_TEAM_NAMES = new Set(QUALIFIED_TEAMS)
+import { hasClinchedGroupQualification, TEAM_OWNER } from '../scoring.js'
 
 function QualifiedStar({ show }) {
   if (!show) return null
@@ -49,7 +46,7 @@ export default function Standings() {
             <tbody>
               {g.table.map((row) => {
                 const owner = TEAM_OWNER[row.team.name]
-                const isQualified = QUALIFIED_TEAM_NAMES.has(row.team.name)
+                const isQualified = hasClinchedGroupQualification(row, g.table)
                 return (
                 <tr key={row.team.id} className={owner ? 'owned-row' : ''}>
                   <td>{row.position}</td>

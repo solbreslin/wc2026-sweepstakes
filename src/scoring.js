@@ -10,6 +10,20 @@ const POOL_TEAMS = new Set(Object.keys(TEAM_OWNER))
 
 const LIVE_MATCH_STATUSES = new Set(['IN_PLAY', 'PAUSED', 'LIVE'])
 
+export function hasClinchedGroupQualification(row, table = []) {
+  const groupGames = Math.max(0, table.length - 1)
+  const rowPoints = row.points ?? 0
+
+  const teamsThatCanCatchOrPass = table.filter((other) => {
+    if (other.team.id === row.team.id) return false
+    const remainingGames = Math.max(0, groupGames - (other.playedGames ?? 0))
+    const maxPoints = (other.points ?? 0) + remainingGames * 3
+    return maxPoints >= rowPoints
+  })
+
+  return teamsThatCanCatchOrPass.length <= 1
+}
+
 // Upcoming matches involving at least one pool team, soonest first.
 export function upcomingPoolMatches(matches = [], limit = 8) {
   const now = Date.now()

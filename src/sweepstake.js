@@ -17,9 +17,6 @@ export const PARTICIPANTS = [
   { name: 'Sol', teams: ['Brazil', 'Norway'] },
 ]
 
-// Teams that have mathematically qualified for the next round.
-export const QUALIFIED_TEAMS = ['Germany', 'United States', 'Mexico']
-
 // Points awarded per finished match, per team.
 export const SCORING = {
   win: 3,
