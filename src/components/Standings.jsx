@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react'
 import { getStandings } from '../api.js'
 import { TEAM_OWNER } from '../scoring.js'
+import { QUALIFIED_TEAMS } from '../sweepstake.js'
+
+const QUALIFIED_TEAM_NAMES = new Set(QUALIFIED_TEAMS)
+
+function QualifiedStar({ show }) {
+  if (!show) return null
+  return (
+    <span className="qualified-star" title="Qualified for the next round" aria-label="Qualified for the next round">
+      ★
+    </span>
+  )
+}
 
 export default function Standings() {
   const [groups, setGroups] = useState(null)
@@ -37,6 +49,7 @@ export default function Standings() {
             <tbody>
               {g.table.map((row) => {
                 const owner = TEAM_OWNER[row.team.name]
+                const isQualified = QUALIFIED_TEAM_NAMES.has(row.team.name)
                 return (
                 <tr key={row.team.id} className={owner ? 'owned-row' : ''}>
                   <td>{row.position}</td>
@@ -45,9 +58,13 @@ export default function Standings() {
                       <>
                         <strong>{owner}</strong>{' '}
                         <span className="muted small">{row.team.name}</span>
+                        <QualifiedStar show={isQualified} />
                       </>
                     ) : (
-                      <span className="muted">{row.team.name}</span>
+                      <>
+                        <span className="muted">{row.team.name}</span>
+                        <QualifiedStar show={isQualified} />
+                      </>
                     )}
                   </td>
                   <td>{row.playedGames}</td>

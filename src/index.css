@@ -120,6 +120,14 @@ h2 {
 
 .owned-row td { background: rgba(22, 163, 74, 0.08); }
 .owned-row strong { color: var(--accent); }
+.qualified-star {
+  color: var(--gold);
+  display: inline-block;
+  font-size: 0.85rem;
+  line-height: 1;
+  margin-left: 0.35rem;
+  vertical-align: 0.05em;
+}
 
 .hero {
   display: flex;
