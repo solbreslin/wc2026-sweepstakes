@@ -29,7 +29,7 @@ function TeamStatus({ team }) {
       <Crest team={team} />
       <div className="team-status-main">
         <div className="team-status-topline">
-          <strong>{team.team}</strong>
+          <span className="team-status-name">{team.team}</span>
           <span className="team-status-badge">{team.label}</span>
         </div>
         <div className="team-status-detail">{team.detail}</div>

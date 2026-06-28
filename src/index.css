@@ -88,6 +88,8 @@ h2 {
 
 .upcoming { margin-bottom: 2rem; }
 
+.upcoming h2 { margin-bottom: 0.75rem; }
+
 .section-heading {
   display: flex;
   align-items: center;
@@ -200,7 +202,8 @@ h2 {
   justify-content: space-between;
 }
 
-.team-status-topline strong {
+.team-status-name {
+  font-weight: 400;
   min-width: 0;
   overflow-wrap: anywhere;
 }
